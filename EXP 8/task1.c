@@ -4,7 +4,7 @@ Task: 1
 Name: Prajapati Nitesh
 UIN: 241P006
 Roll no: 06 Division: C
-Title: WAP to find sum of two matrix.
+Title: WAP to find the length of a string without using library function
 */
 
 #include <stdio.h>
