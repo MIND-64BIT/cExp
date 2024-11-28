@@ -4,7 +4,7 @@ Task: 2
 Name: Prajapati Nitesh
 UIN: 241P006
 Roll no: 06 Division: C
-Title: WAP to find sum of two matrix.
+Title: WAP to check if enterd string is palindrome or not
 */
 
 #include <stdio.h>
