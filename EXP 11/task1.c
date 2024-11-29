@@ -1,13 +1,14 @@
 
 /*
-    Expt 11 - Task 1
-    Module 4 : Files
-    Aim: WAP to maintain a simple employee database
-        using file handling. 
-    
+Exp no: 11
+Name: Prajapati Nitesh
+UIN: 241P006
+Roll no: 06 Division: C
 */
 
+
 #include <stdio.h>
+#include <string.h>
 
 // Define a structure to hold employee details
 struct employee {
@@ -63,17 +64,97 @@ void display_employees() {
     fclose(file);
 }
 
+// Function to edit an employee record
+void edit_employee() {
+    struct employee emp;
+    int id_to_edit, found = 0;
+    FILE *file = fopen("employee_database.txt", "r");
+    FILE *temp = fopen("temp.txt", "w");
+
+    if (file == NULL) {
+        printf("No employee records found to edit!\n");
+        return;
+    }
+
+    printf("Enter the Employee ID to edit: ");
+    scanf("%d", &id_to_edit);
+
+    while (fscanf(file, "%d %f %[^\n]", &emp.id, &emp.salary, emp.name) != EOF) {
+        if (emp.id == id_to_edit) {
+            found = 1;
+            printf("Editing Employee ID %d:\n", emp.id);
+            printf("Enter New Name: ");
+            getchar();
+            gets(emp.name);
+            printf("Enter New Salary: ");
+            scanf("%f", &emp.salary);
+        }
+        fprintf(temp, "%d %.2f %s\n", emp.id, emp.salary, emp.name);
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    if (found) {
+        remove("employee_database.txt");
+        rename("temp.txt", "employee_database.txt");
+        printf("Employee record updated successfully!\n");
+    } else {
+        remove("temp.txt");
+        printf("Employee ID not found!\n");
+    }
+}
+
+// Function to remove an employee record
+void remove_employee() {
+    struct employee emp;
+    int id_to_remove, found = 0;
+    FILE *file = fopen("employee_database.txt", "r");
+    FILE *temp = fopen("temp.txt", "w");
+
+    if (file == NULL) {
+        printf("No employee records found to delete!\n");
+        return;
+    }
+
+    printf("Enter the Employee ID to remove: ");
+    scanf("%d", &id_to_remove);
+
+    while (fscanf(file, "%d %f %[^\n]", &emp.id, &emp.salary, emp.name) != EOF) {
+        if (emp.id == id_to_remove) {
+            found = 1;
+            printf("Removing Employee ID %d: %s\n", emp.id, emp.name);
+            continue;
+        }
+        fprintf(temp, "%d %.2f %s\n", emp.id, emp.salary, emp.name);
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    if (found) {
+        remove("employee_database.txt");
+        rename("temp.txt", "employee_database.txt");
+        printf("Employee record removed successfully!\n");
+    } else {
+        remove("temp.txt");
+        printf("Employee ID not found!\n");
+    }
+}
+
 int main() {
     int choice;
 
-    printf("\t\t *** Employee Database *** \n\n");
+    printf("\t\t * Employee Database * \n\n");
 
     while (1) {
         // Menu for user
         printf("\nEmployee Database Menu:\n");
         printf("1. Add Employee Record\n");
         printf("2. Display Employee Records\n");
-        printf("3. Exit\n");
+        printf("3. Edit Employee Record\n");
+        printf("4. Remove Employee Record\n");
+        printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -85,6 +166,12 @@ int main() {
                 display_employees();
                 break;
             case 3:
+                edit_employee();
+                break;
+            case 4:
+                remove_employee();
+                break;
+            case 5:
                 printf("Exiting the program.\n");
                 return 0;
             default:
@@ -97,62 +184,57 @@ int main() {
 
 
 
+/*
+    Output:
 
-/* OUTPUT
+    1. **Add Employee Record (Choice 1)**:
+       - Prompts for Employee ID, Name, and Salary. Adds the employee's details to the `employee_database.txt` file.
+       - Example input and output:
+         Enter Employee ID: 101
+         Enter Employee Name: John Doe
+         Enter Employee Salary: 50000
+         Employee record added successfully!
+       - File content after adding:
+         101 50000.00 John Doe
 
-                 *** Employee Database *** 
+    2. **Display Employee Records (Choice 2)**:
+       - Displays all employee records from the file.
+       - Example output (if a record exists):
+         Employee Records:
+         ID      Name            Salary
+         ---------------------------------
+         101     John Doe        50000.00
+       - If no records are found, the output will be:
+         No employee records found!
 
+    3. **Edit Employee Record (Choice 3)**:
+       - Prompts for the Employee ID to edit, then updates the name and salary.
+       - Example input and output (if the record is found):
+         Enter the Employee ID to edit: 101
+         Editing Employee ID 101:
+         Enter New Name: Jane Smith
+         Enter New Salary: 60000
+         Employee record updated successfully!
+       - File content after editing:
+         101 60000.00 Jane Smith
+       - If the ID is not found:
+         Employee ID not found!
 
-Employee Database Menu:
-1. Add Employee Record
-2. Display Employee Records
-3. Exit
-Enter your choice: 1
-Enter Employee ID: 101
-Enter Employee Name: Sanjay Singh
-Enter Employee Salary: 20000
-Employee record added successfully!
+    4. **Remove Employee Record (Choice 4)**:
+       - Prompts for the Employee ID to remove. Deletes the corresponding record from the file.
+       - Example input and output (if the record exists):
+         Enter the Employee ID to remove: 101
+         Removing Employee ID 101: Jane Smith
+         Employee record removed successfully!
+       - File content after removing (if no other records exist):
+         (Empty file or remaining records)
+       - If the ID is not found:
+         Employee ID not found!
 
-Employee Database Menu:
-1. Add Employee Record
-2. Display Employee Records
-3. Exit
-Enter your choice: 1
-Enter Employee ID: 102
-Enter Employee Name: Junaid
-Enter Employee Salary: 230000
-Employee record added successfully!
-
-Employee Database Menu:
-1. Add Employee Record
-2. Display Employee Records
-3. Exit
-Enter your choice: 1
-Enter Employee ID: 103
-Enter Employee Name: Jon Doe
-Enter Employee Salary: 12000
-Employee record added successfully!
-
-Employee Database Menu:
-1. Add Employee Record
-2. Display Employee Records
-3. Exit
-Enter your choice: 2
-
-Employee Records:
-ID      Name            Salary
----------------------------------
-101     Sanjay Singh   20000.00
-102     Junaid         230000.00
-103     Jon Doe        12000.00
-
-Employee Database Menu:
-1. Add Employee Record
-2. Display Employee Records
-3. Exit
-Enter your choice: 3
-Exiting the program.
-
+    5. **Exit Program (Choice 5)**:
+       - Exits the program with a message:
+         Exiting the program.
 */
+
 task1.c
 Displaying task1.c.
